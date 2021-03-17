@@ -32,9 +32,7 @@ TEST_CASE("List/pushFront")
 
     list.pushFront(1);
     list.pushFront(2);
-    list.pushFront(3);
-    list.pushFront(4);
-    list.pushFront(5);
+
     REQUIRE(list[0] == 2);
     REQUIRE(list[1] == 1);
 }
@@ -45,9 +43,6 @@ TEST_CASE("List/pushBack")
 
     list.pushBack(1);
     list.pushBack(2);
-    list.pushBack(3);
-    list.pushBack(4);
-    list.pushBack(5);
 
     REQUIRE(list[0] == 1);
     REQUIRE(list[1] == 2);
@@ -62,7 +57,7 @@ TEST_CASE("List/insert")
     list.insert(3, 1);
     list.insert(4, 0);
 
-    REQUIRE(list[1] == 4);
+    REQUIRE(list[0] == 4);
     REQUIRE(list[1] == 1);
     REQUIRE(list[2] == 3);
     REQUIRE(list[3] == 2);

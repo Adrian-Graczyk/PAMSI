@@ -5,7 +5,7 @@
 
 template <typename T>
 class List
-{ //////
+{ 
   
   public:
     class Node
@@ -19,6 +19,7 @@ class List
     int number = 0;
     std::shared_ptr<Node> head;
     std::shared_ptr<Node> tail;
+
 
 
     class Iterator
@@ -154,9 +155,8 @@ typename List<T>::Iterator List<T>::Iterator::operator-(difference_type diff) co
 
 template <typename T>
 typename List<T>::Iterator List<T>::Iterator::operator[](std::size_t i)
-{
-  // TODO: implement
-  return Iterator();
+{  
+  
 }
 
 template <typename T>
@@ -306,7 +306,6 @@ void List<T>::pushBack(const T& newElement)
     temp->previous=new_node;
     tail=new_node;
     number++;
-    display();
   }
  
 }
@@ -340,8 +339,6 @@ void List<T>::pushFront(const T& newElement)
     temp->next=new_node;
     head=new_node;
     number++;
-    display();
-
   }
 
   
@@ -353,14 +350,46 @@ void List<T>::pushFront(const T& newElement)
 template <typename T>
 void List<T>::insert(const T& newElement, int index)
 {
+  std::shared_ptr<Node> new_node{new Node};
+  new_node->value=newElement;
+  auto temp = head;
 
-    // TODO: implement
+  for(int i=0;i<index;i++)
+  {
+    temp=temp->previous;
+  }
+  
+  new_node->previous=temp;
+  new_node->next=temp->next;
+
+  if(temp->next==nullptr)
+  {
+    head=new_node;
+  }
+  else 
+  temp->next->previous=new_node;
+
+  temp->next=new_node;
 }
 
 template <typename T>
 void List<T>::remove(const T& element)
 {
-    // TODO: implement
+  auto temp = head;
+
+  while(temp->previous)
+  {
+    if(temp->value==element)
+    break;
+    temp=temp->previous;
+  }
+
+  if(temp->next!=nullptr)
+  temp->next->previous=temp->previous;
+  else
+  head=temp->previous;
+
+  temp->previous->next=temp->next;
 }
 
 template <typename T>
@@ -383,7 +412,7 @@ typename List<T>::ConstIterator List<T>::cbegin() const
 
     // TODO: implement
     return ConstIterator();
-}
+} 
 
 template <typename T>
 typename List<T>::ConstIterator List<T>::cend() const
@@ -395,9 +424,16 @@ typename List<T>::ConstIterator List<T>::cend() const
 template <typename T>
 T& List<T>::operator[](int index)
 {
-    // TODO: implement
-    static T element;
-    return element;
+  static T element;
+  auto temp = head;
+
+  for(int i=0;i<index;i++)
+  {
+    temp=temp->previous;
+  }
+  
+  element=temp->value;
+  return element;
 }
 
 #endif /* LIST_HPP_ */
