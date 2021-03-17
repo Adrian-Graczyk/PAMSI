@@ -12,8 +12,10 @@ class List
     {
     public:
     T value;
+    int priority=0;
     std::shared_ptr<Node> next=nullptr;
     std::shared_ptr<Node> previous=nullptr;
+    //~Node(){std::cout<<"AAAAAAAAAAA"<<std::endl;}
     };
 
     int number = 0;
@@ -73,6 +75,7 @@ class List
     void pushBack(const T& newElement);
     void pushFront(const T& newElement);
     void insert(const T& newElement, int index);
+    void insert_priority(const T& newElement, int priority);
     void remove(const T& element);
     void display();
 
@@ -288,14 +291,12 @@ void List<T>::pushBack(const T& newElement)
   {
     head=new_node;
     tail=new_node;
-    number++;
   }
   else if(number==1)
   {
     tail=new_node;
     tail->next=head;
     head->previous=tail;
-    number++;
   }
   else
   {
@@ -305,9 +306,8 @@ void List<T>::pushBack(const T& newElement)
     new_node->next=temp;
     temp->previous=new_node;
     tail=new_node;
-    number++;
   }
- 
+  number++;
 }
 
 template <typename T>
@@ -319,7 +319,7 @@ void List<T>::pushFront(const T& newElement)
   if(number==0)
   {
     head=new_node;
-    number++;
+    tail=new_node;
   }
   else if(number==1)
   {
@@ -327,21 +327,18 @@ void List<T>::pushFront(const T& newElement)
     head=new_node;
     tail->next=head;
     head->previous=tail;
-    number++;
   }
   else
   {
     auto temp= head;
 
-  
     new_node->previous=temp;
     new_node->next=nullptr;
     temp->next=new_node;
     head=new_node;
-    number++;
   }
 
-  
+  number++;
 }
   
 
@@ -370,7 +367,60 @@ void List<T>::insert(const T& newElement, int index)
   temp->next->previous=new_node;
 
   temp->next=new_node;
+  number++;
 }
+
+template <typename T>
+void List<T>::insert_priority(const T& newElement, int priority)
+{
+  std::shared_ptr<Node> new_node{new Node};
+  new_node->value=newElement;
+  new_node->priority=priority;
+  auto temp = head;
+
+  if(number==0)
+  {
+  head=new_node;
+  tail=new_node;
+  }
+  else if(number==1)
+  {
+      if(temp->priority>priority)
+      {
+        new_node->next=temp;
+        temp->previous=new_node;
+        tail=new_node;
+      }
+      else
+      {
+        new_node->previous=temp;
+        temp->next=new_node;
+        head=new_node;  
+      }
+  }
+  else
+  {
+    while(temp->priority>priority)
+    {
+      std::cout<<std::endl<<"petla"<<std::endl;
+      temp=temp->previous;
+    }
+  
+    new_node->previous=temp;
+    new_node->next=temp->next;
+
+    if(temp->next==nullptr)
+    {
+      head=new_node;
+    }
+    else 
+    temp->next->previous=new_node;
+
+    temp->next=new_node;
+  }
+  number++;
+}
+
 
 template <typename T>
 void List<T>::remove(const T& element)
@@ -384,12 +434,25 @@ void List<T>::remove(const T& element)
     temp=temp->previous;
   }
 
-  if(temp->next!=nullptr)
-  temp->next->previous=temp->previous;
+  if(temp->previous==nullptr && temp->next==nullptr)
+  {
+  }
+  else if(temp->previous==nullptr)
+  {
+    temp->next->previous=nullptr;
+    tail=temp->next;
+  }
+  else if(temp->next==nullptr)
+  {
+    temp->previous->next=nullptr;
+    head=temp->previous;
+  }
   else
-  head=temp->previous;
-
-  temp->previous->next=temp->next;
+  {
+    temp->previous->next=temp->next;
+    temp->next->previous=temp->previous;
+  }
+  number--;
 }
 
 template <typename T>

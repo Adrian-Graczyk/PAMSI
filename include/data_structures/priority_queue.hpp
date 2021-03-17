@@ -5,6 +5,7 @@ template <typename T>
 class PriorityQueue
 {
   public:
+    List<T> list;
     void enqueue(const T& newElement, int priority);
     T dequeue();
 };
@@ -13,14 +14,15 @@ class PriorityQueue
 template <typename T>
 void PriorityQueue<T>::enqueue(const T& newElement, int priority)
 {
-  // TODO: implement
+  list.insert_priority(newElement,priority);
 }
 
 template <typename T>
 T PriorityQueue<T>::dequeue()
 {
-  // TODO: implement
-  return T();
+  T value = list.head->value;
+  list.remove(value);
+  return value;
 }
 
 #endif /* PRIORITY_QUEUE_HPP_ */
