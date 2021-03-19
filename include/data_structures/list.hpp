@@ -12,7 +12,6 @@ class List
     {
     public:
     T value;
-    int priority=0;
     std::shared_ptr<Node> next=nullptr;
     std::shared_ptr<Node> previous=nullptr;
     //~Node(){std::cout<<"AAAAAAAAAAA"<<std::endl;}
@@ -26,6 +25,8 @@ class List
 
     class Iterator
     {
+      private:
+      std::shared_ptr<Node> currrentNode;
       public:
         using difference_type = long;
         using value_type = T;
@@ -33,7 +34,7 @@ class List
         using reference = const T&;
         using iterator_category = std::random_access_iterator_tag;
 
-        Iterator(Node* node = nullptr);
+        Iterator(std::shared_ptr<Node> node = nullptr):currrentNode{node} {};
 
         Iterator operator++();
         Iterator operator--();
@@ -42,7 +43,7 @@ class List
         bool operator>(const Iterator& other) const;
         bool operator<(const Iterator& other) const;
         difference_type operator-(const Iterator& other) const;
-        Iterator operator+(difference_type diff) const;
+        Iterator operator+(difference_type diff) ;
         Iterator operator-(difference_type diff) const;
         Iterator operator[](std::size_t i);
         T& operator*();
@@ -88,37 +89,34 @@ class List
 
 };
 
-template <typename T>
-List<T>::Iterator::Iterator(typename List<T>::Node* node)
+/*template <typename T>
+List<T>::Iterator::Iterator(std::shared_ptr<Node>  node)
 {
-}
+  currrentNode=node;
+}*/
 
 template <typename T>
 typename List<T>::Iterator List<T>::Iterator::operator++()
 {
-  // TODO: implement
-  return Iterator();
+  return Iterator{currrentNode->previous};
 }
 
 template <typename T>
 typename List<T>::Iterator List<T>::Iterator::operator--()
 {
-  // TODO: implement
-  return Iterator();
+  return Iterator{currrentNode->next};
 }
 
 template <typename T>
 bool List<T>::Iterator::operator==(const Iterator& other) const
 {
-  // TODO: implement
-  return true;
+  return currrentNode==other.currrentNode;
 }
 
 template <typename T>
 bool List<T>::Iterator::operator!=(const Iterator& other) const
 {
-  // TODO: implement
-  return true;
+  return !(*this==other);
 }
 
 template <typename T>
@@ -143,9 +141,8 @@ typename List<T>::Iterator::difference_type List<T>::Iterator::operator-(const I
 }
 
 template <typename T>
-typename List<T>::Iterator List<T>::Iterator::operator+(difference_type diff) const
+typename List<T>::Iterator List<T>::Iterator::operator+(difference_type diff) 
 {
-  // TODO: implement
   return Iterator();
 }
 
@@ -351,33 +348,6 @@ void List<T>::insert(const T& newElement, int index)
   new_node->value=newElement;
   auto temp = head;
 
-  for(int i=0;i<index;i++)
-  {
-    temp=temp->previous;
-  }
-  
-  new_node->previous=temp;
-  new_node->next=temp->next;
-
-  if(temp->next==nullptr)
-  {
-    head=new_node;
-  }
-  else 
-  temp->next->previous=new_node;
-
-  temp->next=new_node;
-  number++;
-}
-
-template <typename T>
-void List<T>::insert_priority(const T& newElement, int priority)
-{
-  std::shared_ptr<Node> new_node{new Node};
-  new_node->value=newElement;
-  new_node->priority=priority;
-  auto temp = head;
-
   if(number==0)
   {
   head=new_node;
@@ -385,7 +355,7 @@ void List<T>::insert_priority(const T& newElement, int priority)
   }
   else if(number==1)
   {
-      if(temp->priority>priority)
+      if(index!=0)
       {
         new_node->next=temp;
         temp->previous=new_node;
@@ -400,26 +370,39 @@ void List<T>::insert_priority(const T& newElement, int priority)
   }
   else
   {
-    while(temp->priority>priority)
+    for(int i=0;i<index;i++)
     {
-      std::cout<<std::endl<<"petla"<<std::endl;
+      if(temp->previous!=nullptr)
       temp=temp->previous;
     }
-  
-    new_node->previous=temp;
-    new_node->next=temp->next;
 
     if(temp->next==nullptr)
     {
+      new_node->previous=temp;
+      new_node->next=nullptr;
+      temp->next=temp;
       head=new_node;
     }
-    else 
-    temp->next->previous=new_node;
 
-    temp->next=new_node;
+    else if(temp->previous==nullptr && number==index)
+    {
+      new_node->next=temp;
+      new_node->previous=nullptr;
+      temp->previous=new_node;
+      tail=new_node;
+    }
+    else
+    {
+
+      new_node->previous=temp;
+      new_node->next=temp->next;
+      temp->next->previous=new_node;
+      temp->next=new_node;
+    }
   }
   number++;
 }
+
 
 
 template <typename T>
@@ -458,15 +441,13 @@ void List<T>::remove(const T& element)
 template <typename T>
 typename List<T>::Iterator List<T>::begin()
 {
-    // TODO: implement
-    return Iterator();
+  return Iterator{head};
 }
 
 template <typename T>
 typename List<T>::Iterator List<T>::end()
 {
-    // TODO: implement
-    return Iterator();
+  return Iterator{nullptr};
 }
 
 template <typename T>
