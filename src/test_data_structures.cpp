@@ -43,6 +43,9 @@ TEST_CASE("List/pushBack")
 
     list.pushBack(1);
     list.pushBack(2);
+    list.pushBack(3);
+    list.pushBack(4);
+    
 
     REQUIRE(list[0] == 1);
     REQUIRE(list[1] == 2);
@@ -56,7 +59,7 @@ TEST_CASE("List/insert")
     list.pushBack(2);
     list.insert(3, 1);
     list.insert(4, 0);
-    
+
     REQUIRE(list[0] == 4);
     REQUIRE(list[1] == 1);
     REQUIRE(list[2] == 3);
@@ -87,10 +90,10 @@ TEST_CASE("List/iterator")
 
     list.pushBack(1);
     list.pushBack(3);
-    list.pushBack(3);
+    list.pushBack(2);
 
     std::sort(list.begin(), list.end());
-
+    
     REQUIRE(list[0] == 1);
     REQUIRE(list[1] == 2);
     REQUIRE(list[2] == 3);

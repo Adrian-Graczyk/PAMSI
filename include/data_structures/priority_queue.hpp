@@ -51,6 +51,7 @@ template <typename T>
 T PriorityQueue<T>::dequeue()
 {
   auto temp = list.head->value;
+
   list.remove(temp);
   return temp.data;
 }
@@ -74,6 +75,8 @@ int PriorityQueue<T>::findIndex(int priority)
     return ++i;
     }
   }
+  std::cout<<std::endl<<i<<std::endl;
+
   return i;
 }
 
