@@ -12,14 +12,17 @@ class List
     {
     public:
     T value;
-    std::shared_ptr<Node> next=nullptr;
-    std::shared_ptr<Node> previous=nullptr;
-    //~Node(){std::cout<<"AAAAAAAAAAA"<<std::endl;}
+    std::weak_ptr<Node> next;
+    std::shared_ptr<Node> previous;
+    Node():value(),next(),previous(){}
+    Node(T data):value(data),next(),previous(){}
+    ~Node(){//std::cout<<"Node deleted"<<std::endl;
+    }
     };
 
     int number = 0;
     std::shared_ptr<Node> head;
-    std::shared_ptr<Node> tail;
+    std::weak_ptr<Node> tail;
 
 
 
@@ -107,7 +110,7 @@ typename List<T>::Iterator List<T>::Iterator::operator++()
 template <typename T>
 typename List<T>::Iterator List<T>::Iterator::operator--()
 {
-  currentNode=currentNode->next;
+  currentNode=currentNode->next.lock();
   return currentNode;
 }
 
@@ -178,7 +181,7 @@ typename List<T>::Iterator List<T>::Iterator::operator-(difference_type diff) co
   Iterator temp{this->currentNode};
   for(int i=0; i<diff; ++i)
   {
-    temp.currentNode=temp.currentNode->next;
+    temp.currentNode=temp.currentNode->next.lock();
   }
   return temp;
 }
@@ -340,59 +343,43 @@ void List<T>::display()
 template <typename T>
 void List<T>::pushBack(const T& newElement)
 {
-  std::shared_ptr<Node> new_node{new Node};
-  new_node->value=newElement;
+  std::shared_ptr<Node> new_node = std::make_shared<Node>(newElement);
 
   if(number==0)
   {
-    head=new_node;
-    tail=new_node;
-  }
-  else if(number==1)
-  {
-    tail=new_node;
-    tail->next=head;
-    head->previous=tail;
+    head=std::move(new_node);
+    tail=head;
   }
   else
   {
-    auto temp= tail;
-
+    new_node->next=tail.lock();
     new_node->previous=nullptr;
-    new_node->next=temp;
-    temp->previous=new_node;
+    tail.lock()->previous=new_node;
     tail=new_node;
   }
+  //std::cout<<"PUSHBACK"<<std::endl;
   number++;
 }
 
 template <typename T>
 void List<T>::pushFront(const T& newElement)
 {
-  std::shared_ptr<Node> new_node{new Node};
-  new_node->value=newElement;
-
+  std::shared_ptr<Node> new_node = std::make_shared<Node>(newElement);
+  
   if(number==0)
   {
-    head=new_node;
+    head=std::move(new_node);
     tail=new_node;
   }
-  else if(number==1)
-  {
-    tail=head;
-    head=new_node;
-    tail->next=head;
-    head->previous=tail;
-  }
+  
   else
   {
-    auto temp= head;
-
-    new_node->previous=temp;
-    new_node->next=nullptr;
-    temp->next=new_node;
-    head=new_node;
+    new_node->previous=head;
+    new_node->next.lock()=nullptr;
+    head->next=new_node;
+    head=std::move(new_node);
   }
+ // std::cout<<"PUSHFRONT"<<std::endl;
 
   number++;
 }
@@ -403,63 +390,43 @@ void List<T>::pushFront(const T& newElement)
 template <typename T>
 void List<T>::insert(const T& newElement, int index)
 {
-  std::shared_ptr<Node> new_node{new Node};
-  new_node->value=newElement;
-  auto temp = head;
+  //std::cout<<std::endl<<"number: "<<number<<" i index: "<<index<<std::endl;
 
-  if(number==0)
+  if(index == 0) {pushFront(newElement);}
+
+  else if(index == number){pushBack(newElement);}
+
+  else if(index==(number-1))
   {
-  head=new_node;
-  tail=new_node;
+    T temp = tail.lock()->value;
+    remove(temp);
+    pushBack(newElement);
+    pushBack(temp);
   }
-  else if(number==1)
-  {
-      if(index!=0)
-      {
-        new_node->next=temp;
-        temp->previous=new_node;
-        tail=new_node;
-      }
-      else
-      {
-        new_node->previous=temp;
-        temp->next=new_node;
-        head=new_node;  
-      }
-  }
+  
+
   else
   {
-    for(int i=0;i<index;i++)
+    std::shared_ptr<Node> new_node = std::make_shared<Node>(newElement);
+    std::shared_ptr<Node> temp = head;
+
+    for(int i=0; i<index; i++)
     {
       if(temp->previous!=nullptr)
       temp=temp->previous;
     }
+    
 
-    if(temp->next==nullptr)
-    {
-      new_node->previous=temp;
-      new_node->next=nullptr;
-      temp->next=temp;
-      head=new_node;
-    }
+    new_node->previous=temp;
+    temp->next.lock()->previous=new_node;
+    new_node->next.lock()=temp->next.lock();
+    
+    //std::cout<<std::endl<<"wskazywany element"<<temp->value<<std::endl;
+    temp->next.lock()=std::move(new_node);
 
-    else if(temp->previous==nullptr && number==index)
-    {
-      new_node->next=temp;
-      new_node->previous=nullptr;
-      temp->previous=new_node;
-      tail=new_node;
-    }
-    else
-    {
-
-      new_node->previous=temp;
-      new_node->next=temp->next;
-      temp->next->previous=new_node;
-      temp->next=new_node;
-    }
+    number++;
   }
-  number++;
+  
 }
 
 
@@ -476,23 +443,23 @@ void List<T>::remove(const T& element)
     temp=temp->previous;
   }
 
-  if(temp->previous==nullptr && temp->next==nullptr)
+  if(temp->previous==nullptr && temp->next.lock()==nullptr)
   {
   }
   else if(temp->previous==nullptr)
   {
-    temp->next->previous=nullptr;
-    tail=temp->next;
+    temp->next.lock()->previous=nullptr;
+    tail=temp->next.lock();
   }
-  else if(temp->next==nullptr)
+  else if(temp->next.lock()==nullptr)
   {
-    temp->previous->next=nullptr;
+    temp->previous->next.lock()=nullptr;
     head=temp->previous;
   }
   else
   {
-    temp->previous->next=temp->next;
-    temp->next->previous=temp->previous;
+    temp->previous->next.lock()=temp->next.lock();
+    temp->next.lock()->previous=temp->previous;
   }
   number--;
 }

@@ -32,7 +32,7 @@ TEST_CASE("List/pushFront")
 
     list.pushFront(1);
     list.pushFront(2);
-
+    
     REQUIRE(list[0] == 2);
     REQUIRE(list[1] == 1);
 }
@@ -43,9 +43,7 @@ TEST_CASE("List/pushBack")
 
     list.pushBack(1);
     list.pushBack(2);
-    list.pushBack(3);
-    list.pushBack(4);
-    
+     
 
     REQUIRE(list[0] == 1);
     REQUIRE(list[1] == 2);
@@ -116,6 +114,7 @@ TEST_CASE("List/ConstIterator")
         REQUIRE(*it == refArray[index++]);
     }
 }
+
 
 TEST_CASE("Stack")
 {

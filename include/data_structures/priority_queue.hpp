@@ -9,15 +9,14 @@ class PriorityQueue
     void enqueue(const T& newElement, int priority);
     T dequeue();
     int findIndex(int priority);
-     void display();
+    void display();
 
   struct Priodata
   {
     int priority=0;
     T data;
-  
 
-       bool operator==(const Priodata& other) const {return this->data==other.data;};
+    bool operator==(const Priodata& other) const {return this->data==other.data;};
   };
 
   List<Priodata> list;
