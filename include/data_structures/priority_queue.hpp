@@ -29,10 +29,10 @@ void PriorityQueue<T>::display()
   auto temp = list.head;
 
   std::cout<<"lista:"<<std::endl;
-  while (temp->previous)
+  while (temp->next)
   {
   std::cout<<temp->value.data<<std::endl;
-  temp=temp->previous;
+  temp=temp->next;
   }
   std::cout<<temp->value.data<<std::endl;
 }
@@ -66,9 +66,9 @@ int PriorityQueue<T>::findIndex(int priority)
   {
     for(i;temp->value.priority>priority;i++)
     {
-    if(temp->previous!=nullptr)
+    if(temp->next!=nullptr)
     {
-    temp=temp->previous;
+    temp=temp->next;
     }
     else
     return ++i;

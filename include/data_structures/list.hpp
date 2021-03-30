@@ -5,26 +5,19 @@
 
 template <typename T>
 class List
-{ 
-  
+{  
   public:
     class Node
     {
     public:
     T value;
-    std::weak_ptr<Node> next;
-    std::shared_ptr<Node> previous;
-    Node():value(),next(),previous(){}
-    Node(T data):value(data),next(),previous(){}
-    ~Node(){//std::cout<<"Node deleted"<<std::endl;
-    }
+    std::shared_ptr<Node> previous=nullptr;
+    std::shared_ptr<Node> next=nullptr;
     };
 
     int number = 0;
     std::shared_ptr<Node> head;
     std::weak_ptr<Node> tail;
-
-
 
     class Iterator
     {
@@ -84,33 +77,27 @@ class List
     void insert_priority(const T& newElement, int priority);
     void remove(const T& element);
     void display();
+    ~List();
 
     Iterator begin();
     Iterator end();
     ConstIterator cbegin() const;
     ConstIterator cend() const;
     T& operator[](int index);
-
-
+    
 };
-
-/*template <typename T>
-List<T>::Iterator::Iterator(std::shared_ptr<Node>  node)
-{
-  currrentNode=node;
-}*/
 
 template <typename T>
 typename List<T>::Iterator List<T>::Iterator::operator++()
 {
-  currentNode=currentNode->previous;
+  currentNode=currentNode->next;
   return currentNode;
 }
 
 template <typename T>
 typename List<T>::Iterator List<T>::Iterator::operator--()
 {
-  currentNode=currentNode->next.lock();
+  currentNode=currentNode->previous;
   return currentNode;
 }
 
@@ -170,7 +157,7 @@ typename List<T>::Iterator List<T>::Iterator::operator+(difference_type diff) co
   Iterator temp{this->currentNode};
   for(int i=0; i<diff; ++i)
   {
-    temp.currentNode=temp.currentNode->previous;
+    temp.currentNode=temp.currentNode->next;
   }
   return temp;
 }
@@ -181,7 +168,7 @@ typename List<T>::Iterator List<T>::Iterator::operator-(difference_type diff) co
   Iterator temp{this->currentNode};
   for(int i=0; i<diff; ++i)
   {
-    temp.currentNode=temp.currentNode->next.lock();
+    temp.currentNode=temp.currentNode->previous;
   }
   return temp;
 }
@@ -192,7 +179,7 @@ typename List<T>::Iterator List<T>::Iterator::operator[](std::size_t i)
   Iterator temp{this->currentNode};
   for(int j=0; j<i; ++j)
   {
-    temp.currentNode=temp.currentNode->previous;
+    temp.currentNode=temp.currentNode->next;
   }
   return temp;
 }
@@ -203,26 +190,17 @@ T& List<T>::Iterator::operator*()
   return currentNode->value;
 }
 
-
-
-
-
-/*template <typename T>
-List<T>::ConstIterator::ConstIterator(typename List<T>::Node* node)
-{
-}*/
-
 template <typename T>
 typename List<T>::ConstIterator List<T>::ConstIterator::operator++()
 {
-  currentNode=currentNode->previous;
+  currentNode=currentNode->next;
   return currentNode;
 }
 
 template <typename T>
 typename List<T>::ConstIterator List<T>::ConstIterator::operator--()
 {
-  currentNode=currentNode->next;
+  currentNode=currentNode->previous;
   return currentNode;
 }
 
@@ -282,7 +260,7 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator+(difference_typ
   ConstIterator temp{this->currentNode};
   for(int i=0; i<diff; ++i)
   {
-    temp.currentNode=temp.currentNode->previous;
+    temp.currentNode=temp.currentNode->next;
   }
   return temp;
 }
@@ -293,7 +271,7 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator-(difference_typ
   ConstIterator temp{this->currentNode};
   for(int i=0; i<diff; ++i)
   {
-    temp.currentNode=temp.currentNode->next;
+    temp.currentNode=temp.currentNode->previous;
   }
   return temp;
 }
@@ -304,7 +282,7 @@ typename List<T>::ConstIterator List<T>::ConstIterator::operator[](std::size_t i
   ConstIterator temp{this->currentNode};
   for(int j=0; j<i; ++j)
   {
-    temp.currentNode=temp.currentNode->previous;
+    temp.currentNode=temp.currentNode->next;
   }
   return temp;
 }
@@ -315,30 +293,19 @@ const T& List<T>::ConstIterator::operator*()
   return currentNode->value;
 }
 
-
-
-
-
-
 template <typename T>
 void List<T>::display()
 {
   auto temp = head;
 
   std::cout<<"lista:"<<std::endl;
-  while (temp->previous)
+  while (temp->next)
   {
   std::cout<<temp->value<<std::endl;
-  temp=temp->previous;
+  temp=temp->next;
   }
   std::cout<<temp->value<<std::endl;
-
 }
-
-
-
-
-
 
 template <typename T>
 void List<T>::pushBack(const T& newElement)
@@ -347,14 +314,14 @@ void List<T>::pushBack(const T& newElement)
 
   if(number==0)
   {
-    head=std::move(new_node);
-    tail=head;
+    head=new_node;
+    tail=new_node;
   }
   else
   {
-    new_node->next=tail.lock();
-    new_node->previous=nullptr;
-    tail.lock()->previous=new_node;
+    new_node->next=nullptr;
+    new_node->previous=tail;
+    tail->next=new_node;
     tail=new_node;
   }
   //std::cout<<"PUSHBACK"<<std::endl;
@@ -371,97 +338,87 @@ void List<T>::pushFront(const T& newElement)
     head=std::move(new_node);
     tail=new_node;
   }
-  
   else
   {
-    new_node->previous=head;
-    new_node->next.lock()=nullptr;
-    head->next=new_node;
-    head=std::move(new_node);
+    new_node->next=head;
+    new_node->previous=nullptr;
+    head->previous=new_node;
+    head=new_node;
   }
- // std::cout<<"PUSHFRONT"<<std::endl;
-
   number++;
 }
   
-
-
-
 template <typename T>
 void List<T>::insert(const T& newElement, int index)
 {
-  //std::cout<<std::endl<<"number: "<<number<<" i index: "<<index<<std::endl;
-
   if(index == 0) {pushFront(newElement);}
 
   else if(index == number){pushBack(newElement);}
-
-  else if(index==(number-1))
-  {
-    T temp = tail.lock()->value;
-    remove(temp);
-    pushBack(newElement);
-    pushBack(temp);
-  }
   
-
   else
   {
-    std::shared_ptr<Node> new_node = std::make_shared<Node>(newElement);
-    std::shared_ptr<Node> temp = head;
+    std::shared_ptr<Node> new_node{new Node};
+    new_node->value=newElement;
+    auto temp = head;
 
     for(int i=0; i<index; i++)
     {
-      if(temp->previous!=nullptr)
-      temp=temp->previous;
+      if(temp->next!=nullptr)
+      temp=temp->next;
     }
-    
-
-    new_node->previous=temp;
-    temp->next.lock()->previous=new_node;
-    new_node->next.lock()=temp->next.lock();
-    
-    //std::cout<<std::endl<<"wskazywany element"<<temp->value<<std::endl;
-    temp->next.lock()=std::move(new_node);
+  
+    new_node->next=temp;
+    temp->previous->next=new_node;
+    new_node->previous=temp->previous;
+    temp->previous=new_node;
 
     number++;
   }
-  
 }
-
-
 
 template <typename T>
 void List<T>::remove(const T& element)
 {
   auto temp = head;
 
-  while(temp->previous)
+  if(number==0 ||number==1)
   {
-    if(temp->value==element)
-    break;
-    temp=temp->previous;
-  }
-
-  if(temp->previous==nullptr && temp->next.lock()==nullptr)
-  {
-  }
-  else if(temp->previous==nullptr)
-  {
-    temp->next.lock()->previous=nullptr;
-    tail=temp->next.lock();
-  }
-  else if(temp->next.lock()==nullptr)
-  {
-    temp->previous->next.lock()=nullptr;
-    head=temp->previous;
+    head=nullptr;
+    tail=nullptr;
+    number=0;
   }
   else
   {
-    temp->previous->next.lock()=temp->next.lock();
-    temp->next.lock()->previous=temp->previous;
+   while(temp->next)
+    {
+      if(temp->value==element)
+      {
+        if(temp->next==nullptr)
+        {
+          temp->previous->next=nullptr;
+          tail=temp->previous;
+        }
+        else if(temp->previous==nullptr)
+        {
+          temp->next->previous=nullptr;
+          head=temp->next;
+        }
+        else
+        {
+          temp->next->previous=temp->previous;
+          temp->previous->next=temp->next;
+        }
+        number--;
+      }
+      temp=temp->next;
+    }
+    if(temp->value==element)
+    {
+      head->next=nullptr;
+      tail=temp->previous;
+      number--;
+    }
   }
-  number--;
 }
 
 template <typename T>
@@ -479,15 +436,13 @@ typename List<T>::Iterator List<T>::end()
 template <typename T>
 typename List<T>::ConstIterator List<T>::cbegin() const
 {
-
-    return ConstIterator{head};
+  return ConstIterator{head};
 } 
 
 template <typename T>
 typename List<T>::ConstIterator List<T>::cend() const
 {
-    return ConstIterator();
-    // TODO: implement
+  return ConstIterator(tail);
 }
 
 template <typename T>
@@ -495,14 +450,28 @@ T& List<T>::operator[](int index)
 {
   static T element;
   auto temp = head;
-
-  for(int i=0;i<index;i++)
+  if(index >= number)
+  throw "za duży index - brak tylu elementów na liście";
+  else 
   {
-    temp=temp->previous;
-  }
+    for(int i=0;i<index;i++)
+    {
+    temp=temp->next;
+    }
   
-  element=temp->value;
-  return element;
+    element=temp->value;
+    return element;
+  }
 }
 
+template <typename T>
+List<T>::~List()
+{
+auto temp = head;
+      while(temp)
+      {
+        temp->previous=nullptr;
+        temp=temp->next;
+      }
+}
 #endif /* LIST_HPP_ */

@@ -73,12 +73,12 @@ TEST_CASE("List/remove")
     list.pushBack(3);
 
     list.remove(2);
-
+   
     REQUIRE(list[0] == 1);
     REQUIRE(list[1] == 3);
 
     list.remove(1);
-
+    
     REQUIRE(list[0] == 3);
 }
 
