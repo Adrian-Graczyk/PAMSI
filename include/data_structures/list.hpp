@@ -17,7 +17,7 @@ class List
 
     int number = 0;
     std::shared_ptr<Node> head;
-    std::weak_ptr<Node> tail;
+    std::shared_ptr<Node> tail;
 
     class Iterator
     {
@@ -310,7 +310,8 @@ void List<T>::display()
 template <typename T>
 void List<T>::pushBack(const T& newElement)
 {
-  std::shared_ptr<Node> new_node = std::make_shared<Node>(newElement);
+  std::shared_ptr<Node> new_node{new Node};
+  new_node->value=newElement;
 
   if(number==0)
   {
@@ -324,18 +325,18 @@ void List<T>::pushBack(const T& newElement)
     tail->next=new_node;
     tail=new_node;
   }
-  //std::cout<<"PUSHBACK"<<std::endl;
   number++;
 }
 
 template <typename T>
 void List<T>::pushFront(const T& newElement)
 {
-  std::shared_ptr<Node> new_node = std::make_shared<Node>(newElement);
-  
+  std::shared_ptr<Node> new_node{new Node};
+  new_node->value=newElement;
+
   if(number==0)
   {
-    head=std::move(new_node);
+    head=new_node;
     tail=new_node;
   }
   else
