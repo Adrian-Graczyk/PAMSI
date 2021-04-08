@@ -63,19 +63,16 @@ int PriorityQueue<T>::findIndex(int priority)
   auto temp = list.head;
   if(list.number==0)
   return 0;
-  else
+
+  for(i;temp->value.priority>priority;i++)
   {
-    for(i;temp->value.priority>priority;i++)
-    {
-    if(temp->next!=nullptr)
-    {
-    temp=temp->next;
-    }
-    else
-    return ++i;
-    }
+  if(temp->next!=nullptr)
+  {
+  temp=temp->next;
   }
-  std::cout<<std::endl<<i<<std::endl;
+  else
+  return ++i;
+  }
 
   return i;
 }
