@@ -9,15 +9,14 @@ class PriorityQueue
     void enqueue(const T& newElement, int priority);
     T dequeue();
     int findIndex(int priority);
-     void display();
+    void display();
 
   struct Priodata
   {
     int priority=0;
     T data;
-  
 
-       bool operator==(const Priodata& other) const {return this->data==other.data;};
+    bool operator==(const Priodata& other) const {return this->data==other.data;};
   };
 
   List<Priodata> list;
@@ -30,10 +29,10 @@ void PriorityQueue<T>::display()
   auto temp = list.head;
 
   std::cout<<"lista:"<<std::endl;
-  while (temp->next)
+  while (temp->previous)
   {
   std::cout<<temp->value.data<<std::endl;
-  temp=temp->next;
+  temp=temp->previous;
   }
   std::cout<<temp->value.data<<std::endl;
 }
@@ -63,16 +62,19 @@ int PriorityQueue<T>::findIndex(int priority)
   auto temp = list.head;
   if(list.number==0)
   return 0;
-
-  for(i;temp->value.priority>priority;i++)
-  {
-  if(temp->next!=nullptr)
-  {
-  temp=temp->next;
-  }
   else
-  return ++i;
+  {
+    for(i;temp->value.priority>priority;i++)
+    {
+    if(temp->previous!=nullptr)
+    {
+    temp=temp->previous;
+    }
+    else
+    return ++i;
+    }
   }
+  std::cout<<std::endl<<i<<std::endl;
 
   return i;
 }
