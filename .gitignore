@@ -1,4 +1,12 @@
-/build/CmakeFiles/
-/build/cmake_install.cmake
-/build/CmakeCache.txt
-/build/test_data_structures
+Struktury_Danych/build/CmakeFiles/
+Struktury_Danych/build/cmake_install.cmake
+Struktury_Danych/build/CmakeCache.txt
+Struktury_Danych/build/test_data_structures
+
+Sortowanie/build/CmakeFiles/
+Sortowanie/build/cmake_install.cmake
+Sortowanie/build/CmakeCache.txt
+Sortowanie/build/data_generator
+Sortowanie/build/libsorting.a
+Sortowanie/build/sorting_performance
+Sortowanie/build/test_sorting
