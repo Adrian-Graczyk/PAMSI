@@ -26,59 +26,6 @@ void readData(const std::filesystem::path& path, std::vector<int>& tab)
     }
 }
 
-
-// TODO: Choose 3 algorithms, other tests remove
-
-/*TEST_CASE("Sorting big data -- bubble sort")
-{
-    auto dataFilePath = GENERATE(dataDirectoryPath / "sort_data_10000.bin", dataDirectoryPath / "sort_data_100000.bin",
-                                 dataDirectoryPath / "sort_data_100000.bin");
-    std::vector<int> tab, refTab;
-
-    readData(dataFilePath, tab);
-
-    REQUIRE(tab.size() > 1);
-
-    std::copy(tab.begin(), tab.end(), std::back_insert_iterator<std::vector<int>>(refTab));
-
-    REQUIRE(refTab.size() > 1);
-
-    std::sort(refTab.begin(), refTab.end());
-
-    bubbleSort(tab);
-
-    for(int i = 0; i < tab.size(); ++i)
-    {
-        INFO(dataFilePath.filename() << ": Checking tab[" << i << "] == refTab[" << i << "]");
-        REQUIRE(tab[i] == refTab[i]);
-    }
-}
-
-TEST_CASE("Sorting big data -- insertSort")
-{
-    auto dataFilePath = GENERATE(dataDirectoryPath / "sort_data_10000.bin", dataDirectoryPath / "sort_data_100000.bin",
-                                 dataDirectoryPath / "sort_data_100000.bin");
-    std::vector<int> tab, refTab;
-
-    readData(dataFilePath, tab);
-
-    REQUIRE(tab.size() > 1);
-
-    std::copy(tab.begin(), tab.end(), std::back_insert_iterator<std::vector<int>>(refTab));
-
-    REQUIRE(refTab.size() > 1);
-
-    std::sort(refTab.begin(), refTab.end());
-
-    insertSort(tab);
-
-    for(int i = 0; i < tab.size(); ++i)
-    {
-        INFO(dataFilePath.filename() << ": Checking tab[" << i << "] == refTab[" << i << "]");
-        REQUIRE(tab[i] == refTab[i]);
-    }
-} */
-
 TEST_CASE("Sorting big data -- heapSort")
 {
     auto dataFilePath = GENERATE(dataDirectoryPath / "sort_data_10000.bin", dataDirectoryPath / "sort_data_100000.bin",
@@ -154,27 +101,3 @@ TEST_CASE("Sorting big data -- merge sort")
     }
 }
 
-/*TEST_CASE("Sorting big data -- bucket sort")
-{
-    auto dataFilePath = GENERATE(dataDirectoryPath / "sort_data_10000.bin", dataDirectoryPath / "sort_data_100000.bin",
-                                 dataDirectoryPath / "sort_data_100000.bin");
-    std::vector<int> tab, refTab;
-
-    readData(dataFilePath, tab);
-
-    REQUIRE(tab.size() > 1);
-
-    std::copy(tab.begin(), tab.end(), std::back_insert_iterator<std::vector<int>>(refTab));
-
-    REQUIRE(refTab.size() > 1);
-
-    std::sort(refTab.begin(), refTab.end());
-
-    bucketSort(tab);
-
-    for(int i = 0; i < tab.size(); ++i)
-    {
-        INFO(dataFilePath.filename() << ": Checking tab[" << i << "] == refTab[" << i << "]");
-        REQUIRE(tab[i] == refTab[i]);
-    }
-}*/

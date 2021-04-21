@@ -1,16 +1,6 @@
 #include "sorting/sorting.hpp"
 #include <iostream>
 
-void bubbleSort(std::vector<int>& tab)
-{
-    // TODO: implement
-}
-
-void insertSort(std::vector<int>& tab)
-{
-    // TODO: implement
-}
-
 void heapSort(std::vector<int>& tab)
 {
    for (int i = tab.size()/2-1; i >= 0; i--)
@@ -46,7 +36,6 @@ void heapify(std::vector<int>& tab, int size, int root)
     }
 
 }
-
 
 void quickSort(std::vector<int>& tab, int left, int right)
 {
@@ -100,10 +89,10 @@ void quickSort_worst(std::vector<int>& tab, int left, int right)
     } while(i <= j);
    
     if(left < j) 
-    quickSort(tab, left, j);
+    quickSort_worst(tab, left, j);
    
     if(right > i) 
-    quickSort(tab, i, right);
+    quickSort_worst(tab, i, right);
 }
 
 void mergeSort(std::vector<int>& tab, int left, int right)
@@ -164,7 +153,3 @@ void merge(std::vector<int>& tab, int left, int pivot, int right)
     }
 }
 
-void bucketSort(std::vector<int>& tab)
-{
-    // TODO: implement
-}
