@@ -7,16 +7,14 @@ EndVertexIndex = End;
 cost = Cost;
 }
 
+//Stworzenie listy sąsiedztwa z wczytanego grafu
 std::unique_ptr<Graph> AdjacencyListGraph::createGraph(std::istream& is)
 {
-
     int V1;
     Graph graph;
     graph = graph.createGraph(is);
     Graph_Connection Connection;
     
-
-
     AdjacencyListGraph List;
     List.Vertex_Quantity=graph.Vertex_Quantity;
     List.Edge_Quantity=graph.Edge_Quantity;
@@ -51,48 +49,6 @@ std::ostream& operator<<(std::ostream& os, const AdjacencyListGraph& List)
     return os;
 }
 
-/*void AdjacencyListGraph::Dijkstra_Shortest(int sourceIndex, ShortestPathResult& result)
-{
-    int i,j,u;
-    std::vector<int> cost(this->Vertex_Quantity, 999999);
-    std::vector<int> path(this->Vertex_Quantity, -1);
-    std::vector<bool> sets(this->Vertex_Quantity, 0);
-  
-    std::vector<Graph_Connection> connection;
-  
-    // Insert source itself in Set and initialize its
-    // distance as 0.
-    connection.push_back(Graph_Connection(0,sourceIndex));
-    cost[sourceIndex] = 0;
-  
-    for( i = 0; i < this->Vertex_Quantity; i++ )
-    {
-        // Szukamy wierzchołka w Q o najmniejszym koszcie 
-        for( j = 0; sets[j]; j++ );
-            for( u = j++; j < this->Vertex_Quantity; j++ )
-                if( !sets[j] && (cost[j] < cost[u] )) 
-                    u = j;
-
-        sets[u]=true;
-
-        std::vector<Graph_Connection>::iterator k;
-        for( k = this->List[u].begin(); k!=this->List[u].end(); ++k)
-        {
-
-            int v = (*k).EndVertexIndex;
-            int weight = (*k).cost;
-
-            if (!sets[v] && (cost[v]>cost[u]+weight))
-            {
-                cost[v] = cost[u] + weight;
-                path[v]=u;
-            }
-        }
-
-
-    }
-}*/
-
 void AdjacencyListGraph::Find_path_Dijkstra(std::vector<int>& cost, std::vector<bool>& sets,std::vector<int>& path)
 {
     int j, u;
@@ -101,7 +57,7 @@ void AdjacencyListGraph::Find_path_Dijkstra(std::vector<int>& cost, std::vector<
             if( !sets[j] && (cost[j] < cost[u] )) 
                 u = j;
 
-        sets[u]=true;
+        sets[u]=true; //oznaczenie wierzchołka jako użytego (z obliczona ścieżką)
 
     std::vector<Graph_Connection>::iterator k;
     for( k = this->List[u].begin(); k!=this->List[u].end(); ++k)
@@ -120,7 +76,6 @@ void AdjacencyListGraph::Find_path_Dijkstra(std::vector<int>& cost, std::vector<
 
 void AdjacencyListGraph::Find_path_Bellman_Ford(std::vector<int>& cost, std::vector<bool>& sets,std::vector<int>& path)
 {
-   
     for(int i=0; i< this->Vertex_Quantity; i++)
     {
         std::vector<Graph_Connection>::iterator k;
@@ -139,6 +94,7 @@ void AdjacencyListGraph::Find_path_Bellman_Ford(std::vector<int>& cost, std::vec
     
 }
 
+//Funkcja sprawdzająca wystąpienie negative circle
 bool AdjacencyListGraph::Check_Negative(std::vector<int>& cost)
 {
     for(int i=0; i< this->Vertex_Quantity; i++)
@@ -149,10 +105,9 @@ bool AdjacencyListGraph::Check_Negative(std::vector<int>& cost)
             int v = (*k).EndVertexIndex;
             int weight = (*k).cost;
 
-            if(cost[v]>cost[i]+weight)
+            if(cost[v]>(cost[i]+weight))
             return false;
         }
     }
-    
     return true;
 }

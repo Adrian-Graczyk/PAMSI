@@ -17,7 +17,7 @@ bool Graph::Check_Negative(std::vector<int>& cost)
 }
 
 
-
+//Tworzenie grafu z pliku
 Graph Graph::createGraph(std::istream& is)
 {
     Graph graph;
@@ -26,7 +26,6 @@ Graph Graph::createGraph(std::istream& is)
     is >> graph.Vertex_Quantity;
     is >> graph.Edge_Quantity;
     
-  
     for(int i=0; i<graph.Edge_Quantity; i++)   
     {
         std::vector<int> vector;
@@ -46,7 +45,7 @@ Graph Graph::createGraph(std::istream& is)
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph)
 {
-    for (int i=0; i<graph.Edge_Quantity; i++)   ///zerujemy koszt wszystkich krawędzi
+    for (int i=0; i<graph.Edge_Quantity; i++)  
     {
         for(int j=0; j<3; j++)
         {

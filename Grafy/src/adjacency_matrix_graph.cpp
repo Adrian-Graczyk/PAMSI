@@ -2,7 +2,7 @@
 #define INF 999999
 #define N_INF -999999
 
-
+//Stworzenie macierzy sąsiedztwa z wczytanego grafu
 std::unique_ptr<Graph> AdjacencyMatrixGraph::createGraph(std::istream& is)
 {  
     int V1, V2, cost;
@@ -35,7 +35,7 @@ std::unique_ptr<Graph> AdjacencyMatrixGraph::createGraph(std::istream& is)
 
 std::ostream& operator<<(std::ostream& os, const AdjacencyMatrixGraph& Matrix)
 {
-    for (int i=0; i<Matrix.Vertex_Quantity; i++)   ///zerujemy koszt wszystkich krawędzi
+    for (int i=0; i<Matrix.Vertex_Quantity; i++)   
     {
         for(int j=0; j<Matrix.Vertex_Quantity; j++)
         {
@@ -60,7 +60,7 @@ void AdjacencyMatrixGraph::Find_path_Dijkstra(std::vector<int>& cost, std::vecto
         }
     }
     
-    sets[min_index]=true;
+    sets[min_index]=true; //oznaczenie wierzchołka jako użytego (z obliczona ścieżką)
 
     for (int i = 0; i < this->Vertex_Quantity; i++)
     {
@@ -77,11 +77,10 @@ void AdjacencyMatrixGraph::Find_path_Bellman_Ford(std::vector<int>& cost, std::v
 {
     for(int i = 0; i < this->Vertex_Quantity; i++)
     {
-        for(int j = 0; j < this->Vertex_Quantity; j++)    ///przeszukujemy macierz sasiedztwa w poszukiwaniu krawedzi dla
-                                                            ///danego wierzcholka relaksujac kolejne krawedzie
+        for(int j = 0; j < this->Vertex_Quantity; j++)    
         {
             if(cost[i] != INF && this->Matrix[i][j] != 0 && cost[j] > cost[i] + this->Matrix[i][j])
-            {
+            {   
                 cost[j] = cost[i] + this->Matrix[i][j];
                 path[j] = i;
             }
@@ -89,6 +88,7 @@ void AdjacencyMatrixGraph::Find_path_Bellman_Ford(std::vector<int>& cost, std::v
     }
 }
 
+//Funkcja sprawdzająca wystąpienie negative circle
 bool AdjacencyMatrixGraph::Check_Negative(std::vector<int>& cost)
 {
     for(int k = 1; k < this->Vertex_Quantity; k++)
@@ -98,7 +98,7 @@ bool AdjacencyMatrixGraph::Check_Negative(std::vector<int>& cost)
             for(int j = 0; j < this->Vertex_Quantity; j++)
             {
                 if(this->Matrix[i][j] && cost[j] > (cost[i] + this->Matrix[i][j]) )
-                {
+                {   
                     return false;
                 }
             }

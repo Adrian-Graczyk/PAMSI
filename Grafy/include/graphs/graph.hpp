@@ -15,11 +15,10 @@ class Graph
   int Edge_Quantity;
 
   Graph createGraph(std::istream& is);
+
   virtual void Find_path_Dijkstra(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path);
   virtual void Find_path_Bellman_Ford(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path);
   virtual bool Check_Negative(std::vector<int>& cost);
-
-
 };
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph);

@@ -5,7 +5,7 @@ set (CMAKE_CXX_STANDARD 17)
 
 link_libraries(stdc++fs)
 
-add_library(graph_algorithms_lib src/adjacency_list_graph.cpp src/adjacency_matrix_graph.cpp src/graph.cpp)
+add_library(graph_algorithms_lib src/adjacency_list_graph.cpp src/adjacency_matrix_graph.cpp src/graph.cpp src/timer.cpp src/generate_graphs.cpp src/shortest_path_algorithms.cpp)
 target_include_directories(graph_algorithms_lib PUBLIC include/)
 
 add_executable(test_graphs

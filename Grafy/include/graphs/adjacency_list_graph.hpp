@@ -11,16 +11,18 @@ struct Graph_Connection
   int cost;
 
   public:
-    Graph_Connection(int Cost, int End);
-    Graph_Connection(){}
+  Graph_Connection(int Cost, int End);
+  Graph_Connection(){}
 };
 
 class AdjacencyListGraph : public Graph
 {
   public:
   std::vector<std::vector<Graph_Connection>> List;
+
   static std::unique_ptr<Graph> createGraph(std::istream& is);
 
+  //metody przesłaniające odpowiednie metody wirtualne z klasy bazowej Graph
   virtual void Find_path_Dijkstra(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path) override;
   virtual void Find_path_Bellman_Ford(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path) override;
   virtual bool Check_Negative(std::vector<int>& cost) override;
