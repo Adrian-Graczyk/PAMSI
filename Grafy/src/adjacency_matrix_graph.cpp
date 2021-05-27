@@ -46,63 +46,26 @@ std::ostream& operator<<(std::ostream& os, const AdjacencyMatrixGraph& Matrix)
     return os;
 }
 
-void AdjacencyMatrixGraph::Find_path_Dijkstra(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path)
+std::vector<int> AdjacencyMatrixGraph::neighbours(int i)
 {
-    int min_cost, min_index;
-    min_cost=INF;
-  
-    for (int i = 0; i < this->Vertex_Quantity; i++)
+    std::vector<int> neighbours;
+    for(int j = 0; j < this->Vertex_Quantity; j++)    
     {
-        if(sets[i] == false && cost[i] < min_cost)
-        {
-            min_cost = cost[i]; 
-            min_index = i;
-        }
+        neighbours.push_back(j);
     }
-    
-    sets[min_index]=true; //oznaczenie wierzchołka jako użytego (z obliczona ścieżką)
-
-    for (int i = 0; i < this->Vertex_Quantity; i++)
-    {
-        if (!sets[i] && this->Matrix[min_index][i] && cost[min_index] 
-        != INF && cost[min_index] + this->Matrix[min_index][i] < cost[i])
-        {
-            cost[i] = cost[min_index] + this->Matrix[min_index][i];
-            path[i]=min_index;
-        }     
-    }
+    return neighbours;
 }
 
-void AdjacencyMatrixGraph::Find_path_Bellman_Ford(std::vector<int>& cost, std::vector<bool>& sets,std::vector<int>& path)
+int AdjacencyMatrixGraph::get_Weight(int i, int j)
 {
-    for(int i = 0; i < this->Vertex_Quantity; i++)
-    {
-        for(int j = 0; j < this->Vertex_Quantity; j++)    
-        {
-            if(cost[i] != INF && this->Matrix[i][j] != 0 && cost[j] > cost[i] + this->Matrix[i][j])
-            {   
-                cost[j] = cost[i] + this->Matrix[i][j];
-                path[j] = i;
-            }
-        }
-    }
+   return this->Matrix[i][j]; 
 }
 
-//Funkcja sprawdzająca wystąpienie negative circle
-bool AdjacencyMatrixGraph::Check_Negative(std::vector<int>& cost)
-{
-    for(int k = 1; k < this->Vertex_Quantity; k++)
-    {
-        for(int i = 0; i < this->Vertex_Quantity; i++)
-        {
-            for(int j = 0; j < this->Vertex_Quantity; j++)
-            {
-                if(this->Matrix[i][j] && cost[j] > (cost[i] + this->Matrix[i][j]) )
-                {   
-                    return false;
-                }
-            }
-        }
-    }
+bool AdjacencyMatrixGraph::check_zero(int i, int j)
+{ 
+    if(this->Matrix[i][j] != 0)
     return true;
+    else
+    return false;
 }
+

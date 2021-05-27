@@ -14,10 +14,10 @@ class AdjacencyMatrixGraph : public Graph
   static std::unique_ptr<Graph> createGraph(std::istream& is);
   
   //metody przesłaniające odpowiednie metody wirtualne z klasy bazowej Graph
-  virtual void Find_path_Dijkstra(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path) override;
-  virtual void Find_path_Bellman_Ford(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path) override;
-  virtual bool Check_Negative(std::vector<int>& cost) override;
-
+  virtual int get_Weight(int i, int j) override;
+  std::vector<int> neighbours(int i) override;
+  virtual bool check_zero(int i, int j) override;
+  
 };
 
 std::ostream& operator<<(std::ostream& os, const AdjacencyMatrixGraph& Matrix);

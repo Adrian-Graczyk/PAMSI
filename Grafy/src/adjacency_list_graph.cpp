@@ -49,65 +49,31 @@ std::ostream& operator<<(std::ostream& os, const AdjacencyListGraph& List)
     return os;
 }
 
-void AdjacencyListGraph::Find_path_Dijkstra(std::vector<int>& cost, std::vector<bool>& sets,std::vector<int>& path)
+std::vector<int> AdjacencyListGraph::neighbours(int i)
 {
-    int j, u;
-    for( j = 0; sets[j]; j++ );
-        for( u = j++; j < this->Vertex_Quantity; j++ )
-            if( !sets[j] && (cost[j] < cost[u] )) 
-                u = j;
-
-        sets[u]=true; //oznaczenie wierzchołka jako użytego (z obliczona ścieżką)
-
+    std::vector<int> neighbours;
     std::vector<Graph_Connection>::iterator k;
-    for( k = this->List[u].begin(); k!=this->List[u].end(); ++k)
+    for(k = this->List[i].begin(); k!=this->List[i].end(); ++k)
     {
-
-        int v = (*k).EndVertexIndex;
-        int weight = (*k).cost;
-
-        if (!sets[v] && (cost[v]>cost[u]+weight))
-        {
-            cost[v] = cost[u] + weight;
-            path[v]=u;
-        }
+        neighbours.push_back((*k).EndVertexIndex);
     }
+    return neighbours;
 }
 
-void AdjacencyListGraph::Find_path_Bellman_Ford(std::vector<int>& cost, std::vector<bool>& sets,std::vector<int>& path)
+int AdjacencyListGraph::get_Weight(int i, int j)
 {
-    for(int i=0; i< this->Vertex_Quantity; i++)
+    int weight;
+    std::vector<Graph_Connection>::iterator k;
+    for(k = this->List[i].begin(); k!=this->List[i].end(); ++k)
     {
-        std::vector<Graph_Connection>::iterator k;
-        for(k = this->List[i].begin(); k!=this->List[i].end(); ++k)
-        {
-            int v = (*k).EndVertexIndex;
-            int weight = (*k).cost;
-
-            if (cost[v]>cost[i]+weight)
-            {
-                cost[v] = cost[i] + weight;
-                path[v]=i;
-            }
-        }
+        if(j==(*k).EndVertexIndex)
+            weight = (*k).cost;
     }
-    
+    return weight;
 }
 
-//Funkcja sprawdzająca wystąpienie negative circle
-bool AdjacencyListGraph::Check_Negative(std::vector<int>& cost)
+bool AdjacencyListGraph::check_zero(int i, int j)
 {
-    for(int i=0; i< this->Vertex_Quantity; i++)
-    {
-        std::vector<Graph_Connection>::iterator k;
-        for(k = this->List[i].begin(); k!=this->List[i].end(); ++k)
-        {
-            int v = (*k).EndVertexIndex;
-            int weight = (*k).cost;
-
-            if(cost[v]>(cost[i]+weight))
-            return false;
-        }
-    }
     return true;
 }
+

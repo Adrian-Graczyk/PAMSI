@@ -1,21 +1,21 @@
 #include "graphs/graph.hpp"
 
 
-void Graph::Find_path_Dijkstra(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path)
+bool Graph::check_zero(int i, int j)
 {
-
+    return 0;
 }
 
-void Graph::Find_path_Bellman_Ford(std::vector<int>& cost, std::vector<bool>& sets, std::vector<int>& path)
+std::vector<int> Graph::neighbours(int i)
 {
-
+    std::vector<int> tmp;
+    return tmp;
 }
 
-bool Graph::Check_Negative(std::vector<int>& cost)
+int Graph::get_Weight(int i, int j)
 {
-    return true;
+    return 0;
 }
-
 
 //Tworzenie grafu z pliku
 Graph Graph::createGraph(std::istream& is)
