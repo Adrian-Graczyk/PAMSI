@@ -11,7 +11,6 @@ add_executable(game
   src/main.cpp
   src/gui.cpp
   src/bot.cpp
-  src/game.cpp
   src/board.cpp
   )
 target_link_libraries(game PRIVATE SDL2::Main SDL2::TTF)
